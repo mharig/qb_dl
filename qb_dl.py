@@ -10,10 +10,12 @@ __license__ = '''(c) 2022 AGPLv3'''
 
 ##### TODO
 # 
+# - Debug: After downloading, qb prints: ": no such command
+# - Test: What happens, when URL contains space(s)?
 # - DONE Function, that gets the content of the clipboard, preferably platform independent
-# - Function, that spawns a wget -c, parameters: URL and filepath
-# - Function, that combines an optional parameter to the qb download command, or the basename of the link, and the configured/current download directory to a target filepath
-# - Function, that executes the qb command
+# - DONE Function, that spawns a wget -c, parameters: URL and filepath
+# - What did I mean with this? Function, that combines an optional parameter to the qb download command, or the basename of the link, and the configured/current download directory to a target filepath
+# - DONE Function, that executes the qb command
 # - progress indicator
 
 
@@ -48,21 +50,25 @@ def spawnCmd(_cmd):
     out, err = pid.communicate()
 
     if err.decode() != '':
-        qexec(f'message-info "{err.decode()}"')
-    else:
-        qexec(f'message-info "File {_cmd[5]} downloaded."')
+        qexec('message-info "%s"'%(err.decode(),))
     # TODO: progress bar?
 
 
 def download():
     url = getClipboard()
     tn = url.split('/')[-1]
+    if not tn:
+        qexec('message-info "URL %s is not a filepath. %s"'%(url, tn))
+        sys.exit()
     tp = Path(environ['QUTE_DOWNLOAD_DIR']).joinpath(tn)
     cmd = DLCMD.copy()
-    cmd.append(url.center(len(url)+2, '"'))     # quote
+    # cmd.append(url.center(len(url)+2, '"'))     # quote
+    cmd.append(url)
     cmd.append('-O')
-    cmd.append(tp.center(len(tp)+2, '"'))       # quote
-
+    tp = str(tp)
+    # tp = tp.center(len(tp)+2, '"')              # quote
+    cmd.append(tp)
+    qexec('message-info "Spawning command %s."'%(str(cmd),))
     spawnCmd(cmd)
 
 
