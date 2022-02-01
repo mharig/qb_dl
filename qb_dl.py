@@ -5,7 +5,7 @@
 
 __author__ = 'Michael Harig <floss@michaelharig.de>'
 __version__ = '0.1'
-__license__ = '''(c) 2022 AGPLv3'''
+__license__ = '''(c) 2022 MIT'''
 
 
 ##### TODO
